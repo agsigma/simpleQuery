@@ -1,5 +1,5 @@
 # simpleQuery
-### slow, ugly, experimental, non-optimized 
+### slow, ugly, experimental, not optimized 
 ### DON'T USE IT
 
 Replacement of basic jQuery functions for modern browsers. Very very alpha - don’t use in any serious project unless you read the code.
@@ -8,7 +8,7 @@ Replacement of basic jQuery functions for modern browsers. Very very alpha - don
 ```javascript
 (function($){    
     $.fn.changeHref = function() {
-        this.each(function() {
+        this.each(function(i) {
             $(this).attr('href', 'http://github.com/agsigma/');
             $(this).append($('<span>!' + i + '!</span>').css('color', '#AA3333'));
         });
