@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<head>
+<script src="../js/polyfills.js"></script>
+<script src="../js/simpleQuery.js"></script>
+</head>
+<body>
+	<h1>Example 1</h1>
+	<script>
+		var sQ = simpleQuery;
+		sQ('body').append( sQ('<h2>Clickable simpleQuery</h2>') );
+		sQ('h2').click(function() { 			
+			sQ(this).attr('color', sQ(this).attr('color') == 'yellowgreen' ? 'navy' : 'yellowgreen');
+			sQ(this).css('color', sQ(this).attr('color'));
+		})
+		// this doesn't work (appended nodes are cloned and all events listeners are lost)
+		sQ('body').append( sQ('<h2>Non-clickable</h2>').click(function() { sQ(this).css('color', 'yellowgreen');}) );
+	</script>
+</body>
+</html>

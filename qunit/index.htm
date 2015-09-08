@@ -1,0 +1,115 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Tests</title>
+ 
+  <link rel="stylesheet" href="qunit-1.18.0.css">
+  <script src="qunit-1.18.0.js"></script>  
+  <script src="../js/polyfills.js"></script>
+  <script src="../js/simpleQuery.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+ 
+  <script>
+	sQ = simpleQuery;
+	QUnit.test("sQ: selectors", function( assert ) {
+		var done = assert.async();
+		var selectors = [
+			'#test div',
+			'#test [data-city="katowice"]',
+			'div div'
+		];
+		$(function() {
+			selectors.forEach(function(selector) {
+				var jqres = JSON.stringify($(selector).toArray());
+				var sqres = JSON.stringify(sQ(selector).toArray());
+				assert.equal(sqres, jqres, 'Selector: ' + selector);
+			});
+			done()
+		});		
+	});	
+	
+	QUnit.test("sQ: find", function( assert ) {
+		var done = assert.async();
+		var selectors = [
+			['#test div', 'div', '(fails if unique is not used)'],
+			['#test [data-city="katowice"]', 'div', '']			
+		];
+		$(function() {
+			selectors.forEach(function(selector) {
+				var jqres = JSON.stringify($(selector[0]).find(selector[1]).toArray());
+				var sqres = JSON.stringify(sQ(selector[0]).find(selector[1]).toArray());
+				assert.equal(sqres, jqres, 'Selector: ' + selector[0] + " -> " + selector[1] + '   ' + selector[2]);
+			});
+			done()
+		});		
+	});	
+	
+	QUnit.test("sQ: length, append, addClass, html, detached node", function( assert ) {
+		var done = assert.async();		
+		var test = function(lib) {
+			var el = lib('<div></div>');
+			el.append(lib('<span>blabla</span>').addClass('someClass'));
+			el.append(lib('<span>notbla</span>').addClass('otherClass'));
+			el.find('.otherClass').addClass('superClass');
+			return el;
+		}
+		$(function() {			
+			var sqel = test(sQ);
+			var jqel = test($);
+			assert.equal(sqel.html(), jqel.html(), 'innerHTMLs are equal (cross check with jQuery)');						
+			assert.equal(sqel.find('.otherClass').length, 1, 'selector ".otherClass" on detached node, returns 1 element ');			
+			assert.equal(sqel.find('.otherClass').html(), jqel.find('.otherClass').html(), 'selector on detached nodes: innerHTMLs are equal (cross check with jQuery)');			
+			assert.equal(sqel.find('.otherClass').toArray()[0], sqel.find('.superClass').toArray()[0], 'Every element with class otherClass should have class superClass. Elements comparision.');			
+			assert.equal(sqel.find('.superClass').html(), jqel.find('.superClass').html(), 'Every element with class otherClass should have class superClass (cross check with jQuery)');			
+			assert.notEqual(sqel.toArray(), jqel.toArray(), 'Nodes are different');			
+			done()
+		});		
+	});		
+	QUnit.test("sQ: first, last, eq", function( assert ) {
+		var done = assert.async();		
+		var test = function(lib) {
+			var el = lib('#test div, #test2 div');			
+			return el;
+		}
+		$(function() {			
+			var sqel = test(sQ);
+			var jqel = test($);			
+			assert.equal(sqel.first().html(), jqel.first().html(), '.first(): innerHTMLs are equal (cross check with jQuery)');
+			assert.equal(sqel.first().toArray()[0], jqel.first().toArray()[0], '.first(): nodes are equal (cross check with jQuery)');
+			assert.equal(sqel.eq(4).html(), 'zyx', '.eq(4): innerHTML equals "zyx"');
+			assert.equal(sqel.eq(4).html(), jqel.eq(4).html(), '.eq(4): innerHTMLs are equal (cross check with jQuery)');
+			assert.equal(sqel.eq(4).toArray()[0], jqel.eq(4).toArray()[0], '.eq(4): nodes are equal (cross check with jQuery)');
+			assert.equal(sqel.last().html(), jqel.last().html(), '.last(): innerHTMLs are equal (cross check with jQuery)');
+			assert.equal(sqel.last().toArray()[0], jqel.last().toArray()[0], '.last(): nodes are equal (cross check with jQuery)');			
+			done()
+		});		
+	});		
+  </script>
+</head>
+<body>
+ 
+<div id="qunit"></div>
+<div id="test">
+	<div>a121</div>
+	<div>
+		<div data-city="katowice">aaa212</div>
+		<div>
+			<div>zyx</div>
+		</div>
+	</div>
+</div>
+
+<div id="test2">
+	<div>a</div>
+	<div>
+		<div data-city="katowice">aaa</div>
+		<div>
+			<div>xyz</div>
+		</div>
+	</div>
+</div>
+ 
+</body>
+</html>
