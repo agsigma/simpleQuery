@@ -36,6 +36,18 @@ Clone nodes being appended so all event handlers are lost in process.
 ### sQ.fn.css
 camelCase must be used in names passed to sQ.fn.css.
 
+### sQ.ajax
+Not ajax. Just JSONP passing all parameters in GET. Available option:
+```javascript
+{
+    url: 'http://someapiaddress.com', // url 
+    success: function(data) { alert(JSON.stringify(data)); }, //callback 
+    error: function() { alert(error); }, // callback, 
+    timeout: 5000, // miliseconds
+    data: { name: 'noname' } //params
+}
+```
+
 ### Browsers support
 It requires polyfills to work in any browser(September 2015).
 
