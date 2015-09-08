@@ -32,6 +32,19 @@
 							sQ(this).css('border', '5px solid yellowgreen'); 
 						}) 
 				);
+		sQ.ajax({
+			'url' : 'http://jsonplaceholder.typicode.com/posts/1', 
+			'success' : function(data) { 
+				sQ('body').append(
+					sQ('<textarea style="height: 200px;"></textarea>')
+						.css('width', '100%')
+						.html( "AJAX RESULT:\n" + JSON.stringify(data, null, '  ') )				
+				); 
+			}, 
+			'error' : function() { 
+				alert('ajax error'); 
+			}
+		});
 	</script>
 </body>
 </html>
