@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<head>
+<script src="../js/polyfills.js"></script>
+<script src="../js/simpleQuery.js"></script>
+</head>
+<body>	
+	<script>
+		var sQ = simpleQuery;
+		sQ('body').append( sQ('<h1>Ajax(not real - just jsonp) example:</h1>') );		
+		sQ.ajax({
+			'url' : 'http://jsonplaceholder.typicode.com/posts/1', 
+			'success' : function(data) { 
+				sQ('body').append(
+					sQ('<textarea style="height: 200px;"></textarea>')
+						.css('width', '100%')
+						.html( "First request result:\n" + JSON.stringify(data, null, '  ') )				
+				); 
+			}, 
+			'error' : function() { 
+				alert('ajax error'); 
+			}
+		});
+		sQ.ajax({
+			'url' : 'http://no.address.no.domaindomaindomain', 
+			'timeout' : 2000,
+			'success' : function(data) { 
+				alert('Error: success callback should not fire');
+			}, 
+			'error' : function() { 
+				sQ('body').append(
+					sQ('<textarea style="height: 200px;"></textarea>')
+						.css('width', '100%')
+						.html( "Second request:\nJSONP request timed out after 2 seconds." )				
+				); 
+			}
+		});
+	</script>
+</body>
+</html>
