@@ -4,7 +4,7 @@
 <script src="../js/simpleQuery.js"></script>
 </head>
 <body>
-	<h1>Example 1</h1>
+	<h1>Example 1</h1>	
 	<script>
 		var sQ = simpleQuery;
 		sQ('body').append( sQ('<h2>Clickable simpleQuery</h2>') );
@@ -12,8 +12,26 @@
 			sQ(this).attr('color', sQ(this).attr('color') == 'yellowgreen' ? 'navy' : 'yellowgreen');
 			sQ(this).css('color', sQ(this).attr('color'));
 		})
-		// this doesn't work (appended nodes are cloned and all events listeners are lost)
-		sQ('body').append( sQ('<h2>Non-clickable</h2>').click(function() { sQ(this).css('color', 'yellowgreen');}) );
+		
+		// this doesn't work for second header(nodes appended for second time are cloned and all events listeners are lost)
+		sQ('body')
+			.append( sQ('<div id="ex1"></div>') )
+			.find('#ex1')
+				.append( sQ('<div class="inner"></div>') )
+				.append( sQ('<div class="inner"></div>') )
+				.find('.inner')
+				.append( 
+					sQ('<h3>First active, second not</h3>')
+						.css('boxSizing', 'border-box')
+						.css('border', '5px solid yellowgreen')
+						.css('height', '35px')
+						.bind('mouseenter', function() { 
+							sQ(this).css('border', '6px solid navy'); 
+						}) 
+						.bind('mouseleave', function() { 
+							sQ(this).css('border', '5px solid yellowgreen'); 
+						}) 
+				);
 	</script>
 </body>
 </html>
