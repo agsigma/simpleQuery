@@ -204,21 +204,17 @@ var simpleQuery = (function() {
     // tylko jsonp, tylko parametry w gecie    
     simpleQuery.ajax = function(options) {
         var url = options.url, data = options.data || {};
-        var callback, callbackName, success, error, timeout, k;
-        var query = "";
-        var script, rejectClock;        
-        data.callback = data.callback || 'jsonp' + simpleQuery.ajax.uniqId();   
-        callbackName = data.callback;
+        var callback, callbackName, success, error, timeout, k, query = "", script, rejectClock;        
         
+        callbackName = data.callback = data.callback || 'jsonp' + simpleQuery.ajax.uniqId();                   
         success = options.success || function() {};
         error = options.error || function() {};
-        timeout = options.timeout || 1000 * 60;
+        timeout = options.timeout || 1000 * 15;
         
         for (k in data) {
             query += encodeURIComponent(k) + "=" + encodeURIComponent(data[k]) + "&";
         }
-        query = query.substr(0, query.length-1);
-        console.log(url+"?"+query);
+        query = query.substr(0, query.length-1);        
         window[callbackName] = function(data){
             clearTimeout(rejectClock);
             success(data);      
@@ -227,8 +223,9 @@ var simpleQuery = (function() {
         script.type = 'text/javascript';
         script.async = true;
         script.src = url + "?" + query;
-        document.getElementsByTagName('head')[0].appendChild(script);
-        setTimeout(function() {
+        sQ('head').first().append( sQ(script) );
+        sQ(script).remove();
+        rejectClock = setTimeout(function() {
             error();
         }, timeout);        
     }
