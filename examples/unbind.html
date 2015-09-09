@@ -22,12 +22,12 @@
 		sQ('body').append( 
 			sQ('<h2>Bind click listener</h2>').bind('click', function(e) {				
 				var handler = function(e) {
-					alert(this.no + ". listener!");
-					console.log(this);
+					alert(e.data.no + ". listener!");
+					console.log(this, e.data);
 					e.preventDefault();
 					e.stopPropagation();
 				};				
-				handler = sQ('.clickable').bind('click', handler, {no: new Number(counter++)}, true);
+				handler = sQ('.clickable').bind('click', {no: new Number(counter++)}, handler, true);
 				handlers.push(handler[0]);
 			})
 		);

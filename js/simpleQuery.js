@@ -151,12 +151,21 @@ var simpleQuery = (function() {
             })
         },        
         // if returnHandlers is true, function returns modified handlers array instead of sQ object        
-        'bind' : function(eventName, callback, optThis, returnHandlers) {
-			var handlers = [];
+        'bind' : function(eventName, callback, eventData, returnHandlers) {
+			var handlers = [], tmp;
             callback = callback || function() {};
+            if (!!eventData) { // swap callback and eventData, like in jQuery
+				tmp = eventData;
+				eventData = callback;
+				callback = tmp;
+			}
+			// console.log(eventName, callback, eventData, returnHandlers);
             this.each(function(index, el) {
 				handlers.push(function() { 
-					return callback.apply(optThis || this, arguments); 
+					if (arguments.length || eventData) {
+						Object.assign(arguments[0], {data: eventData})
+					}
+					return callback.apply(this, arguments); 
 				});
                 el.addEventListener(eventName, handlers[handlers.length-1], false);
             });
