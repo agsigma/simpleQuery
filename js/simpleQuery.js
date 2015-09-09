@@ -149,14 +149,31 @@ var simpleQuery = (function() {
             this.each(function(index, el) {
                 el.innerHTML = "";
             })
-        },
-        'bind' : function(eventName, callback) {
+        },        
+        // if returnHandlers is true, function returns modified handlers array instead of sQ object        
+        'bind' : function(eventName, callback, optThis, returnHandlers) {
+			var handlers = [];
             callback = callback || function() {};
             this.each(function(index, el) {
-                el.addEventListener(eventName, callback.bind(this));
+				handlers.push(function() { 
+					return callback.apply(optThis || this, arguments); 
+				});
+                el.addEventListener(eventName, handlers[handlers.length-1], false);
             });
-            return this;
+            return !!returnHandlers ? handlers : this;
         },
+        'unbind' : function(eventName, handlers) {
+			if (typeof(handlers) == "function") { // is function, not array of function
+				handlers = [handlers];
+			}
+			this.each(function(index, el) {				
+				handlers.forEach(function(handler) {
+					el.removeEventListener(eventName, handler, false);
+					console.log(el, eventName, handler, el.removeEventListener(eventName, handler, false));
+				}, this);
+			});
+			return this;
+		},
         'click' : function(callback) {
             this.bind('click', callback);
             return this;
@@ -186,14 +203,24 @@ var simpleQuery = (function() {
         },
         'css': function(name, prop) {
             // dodac konwersje na camelCase            
-            var k;
-            if (arguments.length == 1) {
+            var k, propsObj = {};            
+            if (arguments.length == 1 && typeof(arguments[0]) == 'string') {
                 return this.elems.length ? this.elems[0].style[name] : null;
-            } else if (arguments.length == 2) {
-                // ustawianie
-                this.each(function() {
-                    this.style[name] = prop;
-                });
+            } else {				
+				if (arguments.length == 2) {					
+					propsObj[arguments[0]] = arguments[1];
+				} else {
+					propsObj = name;
+				}
+                // ustawianie                
+                for (k in propsObj) {					
+					this.each(function() {						
+						this.style[k] = propsObj[k];
+						if (propsObj[k] === false) {
+							this.style.removeProperty(k);
+						}
+					});
+				}
                 return this;
             }
         },

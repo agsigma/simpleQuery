@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<head>
+<script src="../js/polyfills.js"></script>
+<script src="../js/simpleQuery.js"></script>
+</head>
+<body>
+	<h1>Example unbind</h1>	
+	<script>
+		/*
+		WOW
+		var f = function() { console.log(this.a); return this.a; }, f2;
+		console.log( f.bind({a:1}).bind({a:2})() === 1 ); // true
+		f2 = f.bind({a:1});
+		console.log( f2 != f2.bind({a:2}) ); // true
+		console.log( f2() == f2.bind({a:2})() ); // true
+		*/
+		
+		var sQ = simpleQuery;
+		var counter = 0;
+		var handlers = [];
+		sQ('body').append( sQ('<h2 class="clickable">CLICK ME!</h2>') );
+		sQ('body').append( 
+			sQ('<h2>Bind click listener</h2>').bind('click', function(e) {				
+				var handler = function(e) {
+					alert(this.no + ". listener!");
+					console.log(this);
+					e.preventDefault();
+					e.stopPropagation();
+				};				
+				handler = sQ('.clickable').bind('click', handler, {no: new Number(counter++)}, true);
+				handlers.push(handler[0]);
+			})
+		);
+		sQ('body').append( sQ('<textarea class="log"></textarea>').css({'height': '200px', 'width': '100%'}) );
+		sQ('body').append(
+			sQ('<h2>Unbind click listeners</h2>').click(function() {
+				sQ('.clickable').unbind('click', handlers);				
+				sQ('body textarea').html('All listeners unbounded');
+			}) 
+		);
+	</script>
+</body>
+</html>
