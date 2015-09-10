@@ -270,7 +270,7 @@ var simpleQuery = (function() {
             return this;
         },
         'css': function(name, prop) {
-            // dodac konwersje na camelCase            
+            // add conversion to camelCase            
             var k, propsObj = {};            
             if (arguments.length == 1 && typeof(arguments[0]) == 'string') {
                 return this.elems.length ? this.elems[0].style[name] : null;
@@ -298,7 +298,7 @@ var simpleQuery = (function() {
     }
     // callback can be registred only once, (map deosn't allow duplicated keys)
     simpleQuery.handlers = new Map(); // Map[el] : (Map[eventName] : (Map[callback] : modifiedCallback))
-    // tylko jsonp, tylko parametry w gecie    
+    // only jsonp, parameters passed by GET only
     simpleQuery.ajax = function(options) {
         var url = options.url, data = options.data || {};
         var callback, callbackName, success, error, timeout, k, query = "", script, rejectClock;        

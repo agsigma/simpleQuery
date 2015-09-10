@@ -204,8 +204,8 @@
 	// simple speed test
 	var test = function(lib) {
 	var time = +(new Date());
-	var l1, callback = function() { alert('a'); }
-		f= function(lib, selector) { 
+	var l1, callback = function() { alert('a'); };
+	var f = function(lib, selector) { 
 			lib(selector).append( 
 				lib('<div class="blabla">! </div>').css('display', 'inline').bind('mouseenter', callback) 
 			); 
