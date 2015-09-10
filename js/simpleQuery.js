@@ -80,7 +80,7 @@ var simpleQuery = (function() {
                 sQElem.each(function(index, appendedEl) {
                     var node = !!dontClone ? appendedEl : appendedEl.cloneNode(true);
                     el.appendChild(node);                                        
-                    // console.log('append: ', el, appendedEl);
+                    //console.log('append: ', el, appendedEl);
                 });                        
                 dontClone = false;                
             })
@@ -355,4 +355,5 @@ var simpleQuery = (function() {
         }
     });
     return simpleQuery;
-})();
+})();  
+

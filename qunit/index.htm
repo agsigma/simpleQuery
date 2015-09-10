@@ -199,7 +199,29 @@
 			<div>xyz</div>
 		</div>
 	</div>
-</div>
- 
+</div> 
+<script>
+	// simple speed test
+	var test = function(lib) {
+	var time = +(new Date());
+	var l1, callback = function() { alert('a'); }
+		f= function(lib, selector) { 
+			lib(selector).append( 
+				lib('<div class="blabla">! </div>').css('display', 'inline').bind('mouseenter', callback) 
+			); 
+		}
+		f(lib, 'body');
+		for(l1=0; l1<12; l1++) {		
+			f(lib, '.blabla');
+		}
+		lib('.blabla').unbind('mouseenter');
+		console.log(lib, +(new Date()) - time, 'ms');
+	}
+	test($);
+	$('.blabla').remove();
+	test(sQ);
+	$('.blabla').remove();
+
+</script>
 </body>
 </html>
