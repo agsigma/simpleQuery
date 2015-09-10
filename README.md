@@ -29,10 +29,10 @@ to make it worse it doesn’t remove duplicates so:
 sQ('div').find('div').find('div').find('div').append(sQ('<span>BLA</span>'));
 ```
 is a disaster (in other words: don’t use find until code gets fixed).
+Bind got fixed. But its still works in O(n^2), where n is number of nodes in selection so use with caution until gets rewrited to use use Set.
 
 ### sQ.fn.append
 Clone nodes being appended so all event handlers are lost in process.
-Bind got fixed. But its still works in O(n^2), where n is number of nodes in selection so use with caution until gets rewrited to use use Set.
 
 ### sQ.fn.css
 camelCase must be used in names passed to sQ.fn.css.
