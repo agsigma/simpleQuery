@@ -27,15 +27,21 @@
 					e.preventDefault();
 					e.stopPropagation();
 				};				
-				handler = sQ('.clickable').bind('click', {no: new Number(counter++)}, handler, true);
-				handlers.push(handler[0]);
+				sQ('.clickable').bind('click', {no: Number(counter++)}, handler);
+				handlers.push(handler);
 			})
 		);
 		sQ('body').append( sQ('<textarea class="log"></textarea>').css({'height': '200px', 'width': '100%'}) );
 		sQ('body').append(
-			sQ('<h2>Unbind click listeners</h2>').click(function() {
-				sQ('.clickable').unbind('click', handlers);				
+			sQ('<h2>Unbind all click listeners</h2>').click(function() {
+				sQ('.clickable').unbind('click');				
 				sQ('body textarea').html('All listeners unbounded');
+			}) 
+		);
+		sQ('body').append(
+			sQ('<h2>Unbind last click listener</h2>').click(function() {
+				sQ('.clickable').unbind('click', handlers[handlers.length-1]);				
+				sQ('body textarea').html('Last listener unbounded');
 			}) 
 		);
 	</script>

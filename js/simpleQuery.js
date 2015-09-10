@@ -149,9 +149,39 @@ var simpleQuery = (function() {
             this.each(function(index, el) {
                 el.innerHTML = "";
             })
-        },        
-        // if returnHandlers is true, function returns modified handlers array instead of sQ object        
-        'bind' : function(eventName, callback, eventData, returnHandlers) {
+        },    
+        'bind' : function(eventName, callback, eventData) {
+			var handlersMap = simpleQuery.handlers;
+			callback = callback || function() {};			
+			if (!!eventData) { // swap callback and eventData, like in jQuery
+				tmp = eventData;
+				eventData = callback;
+				callback = tmp;
+			}
+			this.each(function(index, el) {
+				var eventsMap, callbacksSet;
+				var handler = function() { 
+					if (arguments.length || eventData) {
+						Object.assign(arguments[0], {data: eventData})
+					}
+					return callback.apply(this, arguments); 
+				};
+				if (!handlersMap.has(el)) {
+					handlersMap.set(el, new Map());
+				}
+				eventsMap = handlersMap.get(el);
+				if (!eventsMap.has(eventName)) {
+					eventsMap.set(eventName, new Map());
+				}
+				callbacksSet = eventsMap.get(eventName);
+				callbacksSet.set(callback, handler);
+                el.addEventListener(eventName, handler, false);
+            });            
+            //console.log(handlersMap);
+			return this;
+		},
+        // if returnHandlers is true, function returns array of modified handlers instead of sQ object        
+        'bind2' : function(eventName, callback, eventData, returnHandlers) {
 			var handlers = [], tmp;
             callback = callback || function() {};
             if (!!eventData) { // swap callback and eventData, like in jQuery
@@ -171,17 +201,46 @@ var simpleQuery = (function() {
             });
             return !!returnHandlers ? handlers : this;
         },
-        'unbind' : function(eventName, handlers) {
-			if (typeof(handlers) == "function") { // is function, not array of function
-				handlers = [handlers];
+        // TODO: remove unbound handlers, empty maps
+        'unbind' : function(eventName, callbacks) {			
+			var handlersMap = simpleQuery.handlers, self = this;
+			// console.log('-------');
+			callbacks = callbacks || [];
+			if (typeof(callbacks) == "function") { // is function, not array of function
+				callbacks = [callbacks];
 			}
+			// console.log(handlersMap);
 			this.each(function(index, el) {				
-				handlers.forEach(function(handler) {
-					el.removeEventListener(eventName, handler, false);
-					console.log(el, eventName, handler, el.removeEventListener(eventName, handler, false));
+				var eventsMap = handlersMap.get(el);				
+				var handlersMap2;
+				// console.log(eventsMap, el);
+				if (!eventsMap) {
+					return;
+				}
+				if (!callbacks.length) { // remove all handlers
+					handlersMap2 = eventsMap.get(eventName);
+					handlersMap2.forEach(function(v, k) {
+						el.removeEventListener(eventName, v, false);
+						handlersMap2.delete(k);
+					});
+					return;
+				}		
+				callbacks.forEach(function(callback) {
+					var handlersMap2 = eventsMap.get(eventName);
+					var handler;
+					// console.log(handlersMap2, eventName, callback);
+					if (!handlersMap) { 
+						return; 
+					}
+					handler = handlersMap2.get(callback);
+					if (handlersMap2.has(callback)) {
+						el.removeEventListener(eventName, handler, false);
+						// console.log(el, eventName, handler.toString(), callback.toString());
+						handlersMap2.delete(callback);
+					}
 				}, this);
 			});
-			return this;
+			return self;
 		},
         'click' : function(callback) {
             this.bind('click', callback);
@@ -237,6 +296,8 @@ var simpleQuery = (function() {
             return this.elems;
         }
     }
+    // callback can be registred only once, (map deosn't allow duplicated keys)
+    simpleQuery.handlers = new Map(); // Map[el] : (Map[eventName] : (Map[callback] : modifiedCallback))
     // tylko jsonp, tylko parametry w gecie    
     simpleQuery.ajax = function(options) {
         var url = options.url, data = options.data || {};
