@@ -1,4 +1,8 @@
 var simpleQuery = (function() {
+	"use strict";
+	// From Sizzle 
+	// Utility function for retreiving the text value of an array of DOM nodes
+	var Sizzle = {};
     var simpleQuery = function(selectorOrElems) {
         return new CSimpleQuery(selectorOrElems);
     };
@@ -29,7 +33,80 @@ var simpleQuery = (function() {
         });
         return res;
     };  
+    
+    Sizzle.getText = function( elems ) {
+		var ret = "", elem;
+
+		for ( var i = 0; elems[i]; i++ ) {
+			elem = elems[i];
+
+			// Get the text from text nodes and CDATA nodes
+			if ( elem.nodeType === 3 || elem.nodeType === 4 ) {
+				ret += elem.nodeValue;
+
+			// Traverse everything else, except comment nodes
+			} else if ( elem.nodeType !== 8 ) {
+				ret += Sizzle.getText( elem.childNodes );
+			}
+		}
+
+		return ret;
+	};
+
+    
     simpleQuery.fn =  {
+		'get': function(index) {
+			return this.elems[index];
+		},
+		'height': function() {
+			if (this.length) {
+				return this.get(0).clientHeight;
+			}
+			return undefined;    
+		},
+		'outerHeight': function() {
+			if (this.length) {
+				return this.get(0).offsetHeight;
+			}
+			return undefined;    
+		},
+		'parent': function() {
+			var parentNode;
+			if (this.length) {        
+				parentNode = this.get(0).parentNode;        
+				if (!!parentNode) {
+					return new simpleQuery(this.get(0).parentNode);
+				}
+			}
+			return new simpleQuery([]);    
+		},
+		'position': function() {    
+			var node;
+			if (this.length) {        
+				node = this.get(0);        
+				if (!!node) {
+					return {
+						top: node.offsetTop,
+						left: node.offsetLeft
+					};
+				}
+			}
+			return null;    
+		},
+		'text': function() {
+			var node;
+			if (this.length) {        
+				node = this.get(0);        
+				if (!!node) {
+					if (arguments.length) {
+						throw "simpleQuery:text - Not implemented";
+					} else {
+						return Sizzle.getText([node]);
+					}
+				}
+			}
+			return null; 
+		},
         'find' : function(selector) {
             return new simpleQuery(unique(find(this.elems, selector)))
         },
@@ -63,6 +140,9 @@ var simpleQuery = (function() {
             })
             return this;
         },
+        'detach': function() {
+			return this.remove.apply(this, arguments);
+		},
         'removeAttr' : function(name) {
             this.elems.forEach(function(el) {
                 // console.log(el);
@@ -166,6 +246,7 @@ var simpleQuery = (function() {
 					}
 					return callback.apply(this, arguments); 
 				};
+				handler.bind(this);
 				if (!handlersMap.has(el)) {
 					handlersMap.set(el, new Map());
 				}
@@ -320,8 +401,8 @@ var simpleQuery = (function() {
         script.type = 'text/javascript';
         script.async = true;
         script.src = url + "?" + query;
-        sQ('head').first().append( sQ(script) );
-        sQ(script).remove();
+        simpleQuery('head').first().append( simpleQuery(script) );
+        simpleQuery(script).remove();
         rejectClock = setTimeout(function() {
             error();
         }, timeout);        
