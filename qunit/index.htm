@@ -9,6 +9,7 @@
   <script src="../js/polyfills.js"></script>
   <script src="../js/simpleQuery.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>-->
   <style>
 		.cssTest {
 			font-size: 30px;
@@ -176,6 +177,70 @@
 			);			
 		});		
 	});		
+	QUnit.test("sQ: Speed test", function( assert ) {		
+		var test = function(lib, className, iterations) {
+			var time = +(new Date());
+			var selector = ' .' + className;
+			var l = 0;
+			var l1, callback = function(e) { 
+				console.log(this); 
+				lib(this)
+					.css('color', 'green')
+					.css({
+						'border': '2px solid red',
+						'padding': '4px'
+					}); 
+			};
+			var clickCallback = function() { alert('click!'); };
+			var f = function(lib, selector, className) { 				
+				// console.log(selector, lib(selector).length, lib(selector));
+				/*lib(selector).append( 
+					lib('<div class="' + className + '">! </div>')
+						.html('-' + (l++) + '-')
+						.css('display', 'inline-block')
+						.bind('mouseover', callback)
+						.bind('click', clickCallback)
+				);*/ 
+				lib(selector).each(function() {
+					lib(this).append( 
+						lib('<div class="' + className + '">! </div>')
+						.html('-' + (l++) + '-')
+						.css('display', 'inline-block')
+						.bind('mouseover', callback)
+						.bind('click', clickCallback)
+					);
+				});
+			}
+			f(lib, '#speedTest', className);		
+			for(l1=0; l1<iterations; l1++) {		
+				f(lib, '.' + className, className);
+			}
+			lib(selector).css('color', 'red');
+			lib(selector + selector).css('color', 'green');
+			lib(selector + selector + selector).css('color', 'blue');
+			lib(selector + selector + selector + selector).css('color', 'black');
+			lib('.' + className).attr('href', 'http://www.wp.pl');
+			lib('.'+className).each(function() {			
+				var parent = lib(this).parent();
+				var a = lib('<a>?</a>').attr('href', lib(this).parent().attr('href') || "").append( lib(this).detach() );
+				parent.append(a);
+			});			
+			console.log(lib, +(new Date()) - time, 'ms');
+			return +(new Date()) - time;
+		}
+		$(function() {						
+			var sQtime = test(sQ, 'aaa', 12);			
+			var jQtime = test($, 'bbb', 12);						
+			assert.ok(sQtime < jQtime, 'sQ time: ' + sQtime + ';  jQuery time: ' + jQtime);
+			$('#speedTest').empty();
+		});
+		$(function() {			
+			$('body #speedTest').append( $('<h2>sQ test </h2>') );
+			var sQtime = test(sQ, 'aaa', 4);
+			$('body #speedTest').append( $('<h2>jQ test </h2>') );
+			var jQtime = test($, 'bbb', 4);						
+		});
+	});		
   </script>
 </head>
 <body>
@@ -198,30 +263,10 @@
 		<div>
 			<div>xyz</div>
 		</div>
-	</div>
+	</div>	
 </div> 
-<script>
-	// simple speed test
-	var test = function(lib) {
-	var time = +(new Date());
-	var l1, callback = function() { alert('a'); };
-	var f = function(lib, selector) { 
-			lib(selector).append( 
-				lib('<div class="blabla">! </div>').css('display', 'inline').bind('mouseenter', callback) 
-			); 
-		}
-		f(lib, 'body');
-		for(l1=0; l1<12; l1++) {		
-			f(lib, '.blabla');
-		}
-		lib('.blabla').unbind('mouseenter');
-		console.log(lib, +(new Date()) - time, 'ms');
-	}
-	test($);
-	$('.blabla').remove();
-	test(sQ);
-	$('.blabla').remove();
 
-</script>
+<div id="speedTest">
+</div>
 </body>
 </html>
