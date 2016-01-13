@@ -1,8 +1,8 @@
 var simpleQuery = (function() {
-	"use strict";
-	// From Sizzle 
-	// Utility function for retreiving the text value of an array of DOM nodes
-	var Sizzle = {};
+    "use strict";
+    // From Sizzle 
+    // Utility function for retreiving the text value of an array of DOM nodes
+    var Sizzle = {};
     var simpleQuery = function(selectorOrElems) {
         return new CSimpleQuery(selectorOrElems);
     };
@@ -35,78 +35,78 @@ var simpleQuery = (function() {
     };  
     
     Sizzle.getText = function( elems ) {
-		var ret = "", elem;
+        var ret = "", elem;
 
-		for ( var i = 0; elems[i]; i++ ) {
-			elem = elems[i];
+        for ( var i = 0; elems[i]; i++ ) {
+            elem = elems[i];
 
-			// Get the text from text nodes and CDATA nodes
-			if ( elem.nodeType === 3 || elem.nodeType === 4 ) {
-				ret += elem.nodeValue;
+            // Get the text from text nodes and CDATA nodes
+            if ( elem.nodeType === 3 || elem.nodeType === 4 ) {
+                ret += elem.nodeValue;
 
-			// Traverse everything else, except comment nodes
-			} else if ( elem.nodeType !== 8 ) {
-				ret += Sizzle.getText( elem.childNodes );
-			}
-		}
+            // Traverse everything else, except comment nodes
+            } else if ( elem.nodeType !== 8 ) {
+                ret += Sizzle.getText( elem.childNodes );
+            }
+        }
 
-		return ret;
-	};
+        return ret;
+    };
 
     
     simpleQuery.fn =  {
-		'get': function(index) {
-			return this.elems[index];
-		},
-		'height': function() {
-			if (this.length) {
-				return this.get(0).clientHeight;
-			}
-			return undefined;    
-		},
-		'outerHeight': function() {
-			if (this.length) {
-				return this.get(0).offsetHeight;
-			}
-			return undefined;    
-		},
-		'parent': function() {
-			var parentNode;
-			if (this.length) {        
-				parentNode = this.get(0).parentNode;        
-				if (!!parentNode) {
-					return new simpleQuery(this.get(0).parentNode);
-				}
-			}
-			return new simpleQuery([]);    
-		},
-		'position': function() {    
-			var node;
-			if (this.length) {        
-				node = this.get(0);        
-				if (!!node) {
-					return {
-						top: node.offsetTop,
-						left: node.offsetLeft
-					};
-				}
-			}
-			return null;    
-		},
-		'text': function() {
-			var node;
-			if (this.length) {        
-				node = this.get(0);        
-				if (!!node) {
-					if (arguments.length) {
-						throw "simpleQuery:text - Not implemented";
-					} else {
-						return Sizzle.getText([node]);
-					}
-				}
-			}
-			return null; 
-		},
+        'get': function(index) {
+            return this.elems[index];
+        },
+        'height': function() {
+            if (this.length) {
+                return this.get(0).clientHeight;
+            }
+            return undefined;    
+        },
+        'outerHeight': function() {
+            if (this.length) {
+                return this.get(0).offsetHeight;
+            }
+            return undefined;    
+        },
+        'parent': function() {
+            var parentNode;
+            if (this.length) {        
+                parentNode = this.get(0).parentNode;        
+                if (!!parentNode) {
+                    return new simpleQuery(this.get(0).parentNode);
+                }
+            }
+            return new simpleQuery([]);    
+        },
+        'position': function() {    
+            var node;
+            if (this.length) {        
+                node = this.get(0);        
+                if (!!node) {
+                    return {
+                        top: node.offsetTop,
+                        left: node.offsetLeft
+                    };
+                }
+            }
+            return null;    
+        },
+        'text': function() {
+            var node;
+            if (this.length) {        
+                node = this.get(0);        
+                if (!!node) {
+                    if (arguments.length) {
+                        throw "simpleQuery:text - Not implemented";
+                    } else {
+                        return Sizzle.getText([node]);
+                    }
+                }
+            }
+            return null; 
+        },
         'find' : function(selector) {
             return new simpleQuery(unique(find(this.elems, selector)))
         },
@@ -141,8 +141,8 @@ var simpleQuery = (function() {
             return this;
         },
         'detach': function() {
-			return this.remove.apply(this, arguments);
-		},
+            return this.remove.apply(this, arguments);
+        },
         'removeAttr' : function(name) {
             this.elems.forEach(function(el) {
                 // console.log(el);
@@ -231,98 +231,98 @@ var simpleQuery = (function() {
             })
         },    
         'bind' : function(eventName, callback, eventData) {
-			var handlersMap = simpleQuery.handlers;
-			callback = callback || function() {};			
-			if (!!eventData) { // swap callback and eventData, like in jQuery
-				tmp = eventData;
-				eventData = callback;
-				callback = tmp;
-			}
-			this.each(function(index, el) {
-				var eventsMap, callbacksSet;
-				var handler = function() { 
-					if (arguments.length || eventData) {
-						Object.assign(arguments[0], {data: eventData})
-					}
-					return callback.apply(this, arguments); 
-				};
-				handler.bind(this);
-				if (!handlersMap.has(el)) {
-					handlersMap.set(el, new Map());
-				}
-				eventsMap = handlersMap.get(el);
-				if (!eventsMap.has(eventName)) {
-					eventsMap.set(eventName, new Map());
-				}
-				callbacksSet = eventsMap.get(eventName);
-				callbacksSet.set(callback, handler);
+            var handlersMap = simpleQuery.handlers;
+            callback = callback || function() {};           
+            if (!!eventData) { // swap callback and eventData, like in jQuery
+                tmp = eventData;
+                eventData = callback;
+                callback = tmp;
+            }
+            this.each(function(index, el) {
+                var eventsMap, callbacksSet;
+                var handler = function() { 
+                    if (arguments.length || eventData) {
+                        Object.assign(arguments[0], {data: eventData})
+                    }
+                    return callback.apply(this, arguments); 
+                };
+                handler.bind(this);
+                if (!handlersMap.has(el)) {
+                    handlersMap.set(el, new Map());
+                }
+                eventsMap = handlersMap.get(el);
+                if (!eventsMap.has(eventName)) {
+                    eventsMap.set(eventName, new Map());
+                }
+                callbacksSet = eventsMap.get(eventName);
+                callbacksSet.set(callback, handler);
                 el.addEventListener(eventName, handler, false);
             });            
             //console.log(handlersMap);
-			return this;
-		},
+            return this;
+        },
         // if returnHandlers is true, function returns array of modified handlers instead of sQ object        
         'bind2' : function(eventName, callback, eventData, returnHandlers) {
-			var handlers = [], tmp;
+            var handlers = [], tmp;
             callback = callback || function() {};
             if (!!eventData) { // swap callback and eventData, like in jQuery
-				tmp = eventData;
-				eventData = callback;
-				callback = tmp;
-			}
-			// console.log(eventName, callback, eventData, returnHandlers);
+                tmp = eventData;
+                eventData = callback;
+                callback = tmp;
+            }
+            // console.log(eventName, callback, eventData, returnHandlers);
             this.each(function(index, el) {
-				handlers.push(function() { 
-					if (arguments.length || eventData) {
-						Object.assign(arguments[0], {data: eventData})
-					}
-					return callback.apply(this, arguments); 
-				});
+                handlers.push(function() { 
+                    if (arguments.length || eventData) {
+                        Object.assign(arguments[0], {data: eventData})
+                    }
+                    return callback.apply(this, arguments); 
+                });
                 el.addEventListener(eventName, handlers[handlers.length-1], false);
             });
             return !!returnHandlers ? handlers : this;
         },
         // TODO: remove unbound handlers, empty maps
-        'unbind' : function(eventName, callbacks) {			
-			var handlersMap = simpleQuery.handlers, self = this;
-			// console.log('-------');
-			callbacks = callbacks || [];
-			if (typeof(callbacks) == "function") { // is function, not array of function
-				callbacks = [callbacks];
-			}
-			// console.log(handlersMap);
-			this.each(function(index, el) {				
-				var eventsMap = handlersMap.get(el);				
-				var handlersMap2;
-				// console.log(eventsMap, el);
-				if (!eventsMap) {
-					return;
-				}
-				if (!callbacks.length) { // remove all handlers
-					handlersMap2 = eventsMap.get(eventName);
-					handlersMap2.forEach(function(v, k) {
-						el.removeEventListener(eventName, v, false);
-						handlersMap2.delete(k);
-					});
-					return;
-				}		
-				callbacks.forEach(function(callback) {
-					var handlersMap2 = eventsMap.get(eventName);
-					var handler;
-					// console.log(handlersMap2, eventName, callback);
-					if (!handlersMap) { 
-						return; 
-					}
-					handler = handlersMap2.get(callback);
-					if (handlersMap2.has(callback)) {
-						el.removeEventListener(eventName, handler, false);
-						// console.log(el, eventName, handler.toString(), callback.toString());
-						handlersMap2.delete(callback);
-					}
-				}, this);
-			});
-			return self;
-		},
+        'unbind' : function(eventName, callbacks) {         
+            var handlersMap = simpleQuery.handlers, self = this;
+            // console.log('-------');
+            callbacks = callbacks || [];
+            if (typeof(callbacks) == "function") { // is function, not array of function
+                callbacks = [callbacks];
+            }
+            // console.log(handlersMap);
+            this.each(function(index, el) {             
+                var eventsMap = handlersMap.get(el);                
+                var handlersMap2;
+                // console.log(eventsMap, el);
+                if (!eventsMap) {
+                    return;
+                }
+                if (!callbacks.length) { // remove all handlers
+                    handlersMap2 = eventsMap.get(eventName);
+                    handlersMap2.forEach(function(v, k) {
+                        el.removeEventListener(eventName, v, false);
+                        handlersMap2.delete(k);
+                    });
+                    return;
+                }       
+                callbacks.forEach(function(callback) {
+                    var handlersMap2 = eventsMap.get(eventName);
+                    var handler;
+                    // console.log(handlersMap2, eventName, callback);
+                    if (!handlersMap) { 
+                        return; 
+                    }
+                    handler = handlersMap2.get(callback);
+                    if (handlersMap2.has(callback)) {
+                        el.removeEventListener(eventName, handler, false);
+                        // console.log(el, eventName, handler.toString(), callback.toString());
+                        handlersMap2.delete(callback);
+                    }
+                }, this);
+            });
+            return self;
+        },
         'click' : function(callback) {
             this.bind('click', callback);
             return this;
@@ -355,21 +355,21 @@ var simpleQuery = (function() {
             var k, propsObj = {};            
             if (arguments.length == 1 && typeof(arguments[0]) == 'string') {
                 return this.elems.length ? this.elems[0].style[name] : null;
-            } else {				
-				if (arguments.length == 2) {					
-					propsObj[arguments[0]] = arguments[1];
-				} else {
-					propsObj = name;
-				}
+            } else {                
+                if (arguments.length == 2) {                    
+                    propsObj[arguments[0]] = arguments[1];
+                } else {
+                    propsObj = name;
+                }
                 // ustawianie                
-                for (k in propsObj) {					
-					this.each(function() {						
-						this.style[k] = propsObj[k];
-						if (propsObj[k] === false) {
-							this.style.removeProperty(k);
-						}
-					});
-				}
+                for (k in propsObj) {                   
+                    this.each(function() {                      
+                        this.style[k] = propsObj[k];
+                        if (propsObj[k] === false) {
+                            this.style.removeProperty(k);
+                        }
+                    });
+                }
                 return this;
             }
         },
@@ -382,30 +382,41 @@ var simpleQuery = (function() {
     // only jsonp, parameters passed by GET only
     simpleQuery.ajax = function(options) {
         var url = options.url, data = options.data || {};
-        var callback, callbackName, success, error, timeout, k, query = "", script, rejectClock;        
-        
-        callbackName = data.callback = data.callback || 'jsonp' + simpleQuery.ajax.uniqId();                   
-        success = options.success || function() {};
-        error = options.error || function() {};
-        timeout = options.timeout || 1000 * 15;
-        
-        for (k in data) {
-            query += encodeURIComponent(k) + "=" + encodeURIComponent(data[k]) + "&";
+        var callback, callbackName, success, error, timeout, k, query = "", script, rejectClock; 
+        var hasPromise = simpleQuery.features.Promise;        
+        var makeRequest = function(resolve, reject) {
+            resolve = resolve || function() {};
+            reject = reject || function() {};
+            callbackName = data.callback = data.callback || 'jsonp' + simpleQuery.ajax.uniqId();                   
+            success = options.success || function() {};
+            error = options.error || function() {};
+            timeout = options.timeout || 1000 * 15;
+            
+            for (k in data) {
+                query += encodeURIComponent(k) + "=" + encodeURIComponent(data[k]) + "&";
+            }
+            query = query.substr(0, query.length-1);        
+            window[callbackName] = function(data){
+                clearTimeout(rejectClock);
+                success(data);     
+                hasPromise && resolve(data);  
+            }
+            script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.async = true;
+            script.src = url + "?" + query;
+            simpleQuery('head').first().append( simpleQuery(script) );
+            simpleQuery(script).remove();
+            rejectClock = setTimeout(function() {
+                error();
+                hasPromise && reject();
+            }, timeout);    
         }
-        query = query.substr(0, query.length-1);        
-        window[callbackName] = function(data){
-            clearTimeout(rejectClock);
-            success(data);      
+        if (hasPromise) {
+            return new Promise(makeRequest);
+        } else {
+            makeRequest();
         }
-        script = document.createElement('script');
-        script.type = 'text/javascript';
-        script.async = true;
-        script.src = url + "?" + query;
-        simpleQuery('head').first().append( simpleQuery(script) );
-        simpleQuery(script).remove();
-        rejectClock = setTimeout(function() {
-            error();
-        }, timeout);        
     }
     simpleQuery.ajax._uniqId = Math.floor(Math.random()*1000000)+'';
     simpleQuery.ajax.uniqId = function() { return simpleQuery.ajax._uniqId++;};
@@ -435,6 +446,12 @@ var simpleQuery = (function() {
             return this.elems.length;
         }
     });
+    
+    // feature detect
+    simpleQuery.features = {
+        Promise: !!window.Promise
+    };
+    
     return simpleQuery;
 })();  
 

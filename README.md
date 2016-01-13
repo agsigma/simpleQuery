@@ -58,3 +58,6 @@ It requires polyfills to work in any browser(September 2015).
 
 ### Good parts
 The only good thing I can say about it is that you can throw simpleQuery object out of the window and replace with jQuery - functions definitions are the same.
+
+### Examples
+Can be found in examples directory and in qunit/index.htm.

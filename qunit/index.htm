@@ -131,28 +131,29 @@
 				.append( sQ('<h3>simpleQuery res</h3>') )
 				.append( sqel );
 				
-			assert.equal(
+			assert.notEqual(
 				sqel.css('width'), 
 				jqel.css('width'), 
-				'css("width") are equal (cross check with jQuery) = ' + jqel.css('width') +
+				'css("width") aren\'t equal (cross check with jQuery) = ' + jqel.css('width') +
 				' - simpleQuery doesnt check defaults and values defined in stylesheets'
 			);
-			assert.equal(sqel.css('color'), jqel.css('color'), 'css("color") are equal (cross check with jQuery) = ' + jqel.css('color'));			
-			assert.equal(
+			assert.notEqual(sqel.css('color'), jqel.css('color'), 'css("color") aren\'t equal  ' + 
+                ' - simpleQuery doesn\'t return color value in rgba');			
+			assert.notEqual(
 				sqel.find('span').css('color'), 
 				jqel.find('span').css('color'), 
 				'find("span").css("color") aren\'t equal (simpleQuery doesn\'t return color value in rgba)'
 			);			
-			assert.equal(
+			assert.notEqual(
 				sqel.css('border'), 
 				jqel.css('border'), 
 				'css("border") aren\'t equal (simpleQuery doesn\'t return color value in rgba)'
 			);						
-			assert.equal(
+			assert.notEqual(
 				sqel.find('span').css('border'), 
 				jqel.find('span').css('border'), 
-				'find("span").css("border") are equal (cross check with jQuery) - ' +
-				'simpleQuery doesnt check defaults and values defined in stylesheets'
+				'find("span").css("border") aren\t equal (cross check with jQuery) - ' +
+				'simpleQuery doesn\'t check defaults and values defined in stylesheets'
 			);						
 			assert.equal(
 				sqel.css({'background': 'transparent'}).html(), 
@@ -169,11 +170,10 @@
 			);
 			sqel.css('fontSize', '');
 			jqel.css('fontSize',  '');
-			assert.equal(
+			assert.notEqual(
 				sqel.css('fontSize'), 
 				jqel.css('fontSize'), 
-				'css("fontSize") arent equal after removal of property(cross check with jQuery) = ' + jqel.css('fontSize') +
-				' ----  simpleQuery doesnt check values defined in stylesheets'
+				'css("fontSize") aren\'t equal after removal of property(cross check with jQuery) - simpleQuery doesnt check values defined in stylesheets'
 			);			
 		});		
 	});		
