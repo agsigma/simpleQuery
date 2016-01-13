@@ -141,12 +141,12 @@
 			assert.equal(
 				sqel.find('span').css('color'), 
 				jqel.find('span').css('color'), 
-				'find("span").css("color") are equal (cross check with jQuery)'
+				'find("span").css("color") aren\'t equal (simpleQuery doesn\'t return color value in rgba)'
 			);			
 			assert.equal(
 				sqel.css('border'), 
 				jqel.css('border'), 
-				'css("border") are equal (cross check with jQuery) - '
+				'css("border") aren\'t equal (simpleQuery doesn\'t return color value in rgba)'
 			);						
 			assert.equal(
 				sqel.find('span').css('border'), 
